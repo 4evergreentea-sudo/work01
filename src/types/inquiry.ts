@@ -24,6 +24,9 @@ export type LoanType =
 /** 우선순위 */
 export type Priority = '높음' | '보통' | '낮음';
 
+/** 담보 구분 */
+export type CollateralType = '신용' | '보증서' | '부동산' | '기타';
+
 /** Gemini 분석 결과 타입 */
 export interface ConsultationResult {
   business_entity_type: BusinessEntityType;
@@ -58,6 +61,11 @@ export const LOAN_TYPES: LoanType[] = [
   '신규', '재대출/대약정', '기한연장', '조건변경', '그외기타',
 ];
 
+/** 담보 구분 목록 상수 */
+export const COLLATERAL_TYPES: CollateralType[] = [
+  '신용', '보증서', '부동산', '기타',
+];
+
 /** 업종 아이콘 매핑 */
 export const BUSINESS_TYPE_ICONS: Record<BusinessType, string> = {
   '제조업': '📦',
@@ -78,4 +86,12 @@ export const LOAN_TYPE_ICONS: Record<LoanType, string> = {
   '기한연장': '📅',
   '조건변경': '⚙️',
   '그외기타': '📋',
+};
+
+/** 담보 구분 아이콘 매핑 */
+export const COLLATERAL_TYPE_ICONS: Record<CollateralType, string> = {
+  '신용': '💳',
+  '보증서': '📑',
+  '부동산': '🏢',
+  '기타': '📋',
 };

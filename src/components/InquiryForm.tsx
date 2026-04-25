@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { ConsultationResult, BusinessEntityType, LoanType, BusinessType } from '../types/inquiry';
-import { BUSINESS_TYPES, LOAN_TYPES, BUSINESS_TYPE_ICONS, LOAN_TYPE_ICONS } from '../types/inquiry';
+import type { ConsultationResult, BusinessEntityType, LoanType, BusinessType, CollateralType } from '../types/inquiry';
+import { BUSINESS_TYPES, LOAN_TYPES, COLLATERAL_TYPES, BUSINESS_TYPE_ICONS, LOAN_TYPE_ICONS, COLLATERAL_TYPE_ICONS } from '../types/inquiry';
 import { classifyConsultation } from '../lib/gemini';
 import { saveConsultation } from '../lib/supabase';
 import LoadingSpinner from './LoadingSpinner';
@@ -21,6 +21,7 @@ export default function InquiryForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [hasThirdPartyCollateral, setHasThirdPartyCollateral] = useState(false);
+  const [selectedCollateralType, setSelectedCollateralType] = useState<CollateralType | ''>('');
 
   const handleClassify = async () => {
     if (!customerName.trim() || !inquiry.trim()) {
@@ -40,6 +41,7 @@ export default function InquiryForm() {
       selectedBizType || undefined,
       selectedLoanType || undefined,
       hasThirdPartyCollateral,
+      selectedCollateralType || undefined,
     );
     setIsLoading(false);
 
@@ -74,6 +76,7 @@ export default function InquiryForm() {
     setRawResponse(undefined);
     setIsSaved(false);
     setHasThirdPartyCollateral(false);
+    setSelectedCollateralType('');
   };
 
   return (
@@ -129,12 +132,12 @@ export default function InquiryForm() {
           </div>
         </div>
 
-        {/* 업종 선택 + 대출 유형 선택 (2열) */}
-        <div className="grid gap-6 sm:grid-cols-2 mb-6">
+        {/* 업종 + 대출 유형 + 담보 구분 선택 (3열) */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
           {/* 업종 선택 */}
           <div>
             <label htmlFor="business-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
-              업종 <span className="text-text-muted font-normal">(선택 — AI 자동판별 가능)</span>
+              업종 <span className="text-text-muted font-normal">(AI 자동)</span>
             </label>
             <select
               id="business-type"
@@ -143,7 +146,7 @@ export default function InquiryForm() {
               onChange={(e) => setSelectedBizType(e.target.value as BusinessType | '')}
               disabled={isLoading}
             >
-              <option value="">자동 판별 (AI)</option>
+              <option value="">자동 판별</option>
               {BUSINESS_TYPES.map((bt) => (
                 <option key={bt} value={bt}>
                   {BUSINESS_TYPE_ICONS[bt]} {bt}
@@ -155,7 +158,7 @@ export default function InquiryForm() {
           {/* 대출 유형 선택 */}
           <div>
             <label htmlFor="loan-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
-              대출 유형 <span className="text-text-muted font-normal">(선택 — AI 자동판별 가능)</span>
+              대출 유형 <span className="text-text-muted font-normal">(AI 자동)</span>
             </label>
             <select
               id="loan-type"
@@ -164,10 +167,31 @@ export default function InquiryForm() {
               onChange={(e) => setSelectedLoanType(e.target.value as LoanType | '')}
               disabled={isLoading}
             >
-              <option value="">자동 판별 (AI)</option>
+              <option value="">자동 판별</option>
               {LOAN_TYPES.map((lt) => (
                 <option key={lt} value={lt}>
                   {LOAN_TYPE_ICONS[lt]} {lt}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 담보 구분 선택 */}
+          <div>
+            <label htmlFor="collateral-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
+              담보 구분 <span className="text-text-muted font-normal">(AI 자동)</span>
+            </label>
+            <select
+              id="collateral-type"
+              className="input-field select-field"
+              value={selectedCollateralType}
+              onChange={(e) => setSelectedCollateralType(e.target.value as CollateralType | '')}
+              disabled={isLoading}
+            >
+              <option value="">자동 판별</option>
+              {COLLATERAL_TYPES.map((ct) => (
+                <option key={ct} value={ct}>
+                  {COLLATERAL_TYPE_ICONS[ct]} {ct}
                 </option>
               ))}
             </select>

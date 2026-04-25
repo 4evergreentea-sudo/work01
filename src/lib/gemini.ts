@@ -13,15 +13,16 @@ function cleanJsonResponse(raw: string): string {
 function buildPrompt(
   customerName: string,
   inquiry: string,
-  entityType?: BusinessEntityType,
   selectedBusinessType?: string,
   selectedLoanType?: string,
   hasThirdPartyCollateral?: boolean,
+  selectedCollateralType?: string,
 ): string {
   const entityHint = entityType ? `\n사업자 구분 힌트: ${entityType}` : '';
   const bizHint = selectedBusinessType ? `\n업종 힌트: ${selectedBusinessType}` : '';
   const loanHint = selectedLoanType ? `\n대출 유형 힌트: ${selectedLoanType}` : '';
   const collateralHint = hasThirdPartyCollateral ? `\n제3자 담보 제공 여부: 예 (제3자가 담보를 제공함)` : '\n제3자 담보 제공 여부: 아니오';
+  const collateralTypeHint = selectedCollateralType ? `\n담보 구분 힌트: ${selectedCollateralType}` : '';
 
   return `당신은 KB금융그룹의 기업여신(기업대출) 전문 심사역입니다.
 아래 고객 문의를 분석하여 정확하게 분류하고, 필요한 서류를 빠짐없이 안내하세요.
@@ -125,7 +126,7 @@ function buildPrompt(
 ═══════════════════════════════════
 [고객 정보]
 ═══════════════════════════════════
-고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}${collateralHint}
+고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}${collateralHint}${collateralTypeHint}
 문의 내용: ${inquiry}
 
 ═══════════════════════════════════
@@ -154,6 +155,7 @@ export async function classifyConsultation(
   selectedBusinessType?: string,
   selectedLoanType?: string,
   hasThirdPartyCollateral?: boolean,
+  selectedCollateralType?: string,
 ): Promise<{ result?: ConsultationResult; error?: string; rawResponse?: string }> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
@@ -164,7 +166,15 @@ export async function classifyConsultation(
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const prompt = buildPrompt(customerName, inquiry, entityType, selectedBusinessType, selectedLoanType, hasThirdPartyCollateral);
+    const prompt = buildPrompt(
+      customerName,
+      inquiry,
+      entityType,
+      selectedBusinessType,
+      selectedLoanType,
+      hasThirdPartyCollateral,
+      selectedCollateralType,
+    );
 
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
