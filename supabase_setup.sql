@@ -23,6 +23,7 @@ CREATE TABLE consultation_logs (
   ai_response          TEXT,                             -- AI 안내 메시지 전문
   regulatory_flags     JSONB DEFAULT '[]'::jsonb,        -- 규제 검토 항목 (RTI, DSR 등)
   has_third_party_collateral BOOLEAN DEFAULT false,      -- 제3자 담보 제공 여부
+  is_multi_home_owner        BOOLEAN DEFAULT false,      -- 세대 기준 다주택 여부
   created_at           TIMESTAMPTZ DEFAULT now()
 );
 

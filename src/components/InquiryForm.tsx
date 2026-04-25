@@ -22,6 +22,7 @@ export default function InquiryForm() {
   const [isSaved, setIsSaved] = useState(false);
   const [hasThirdPartyCollateral, setHasThirdPartyCollateral] = useState(false);
   const [selectedCollateralType, setSelectedCollateralType] = useState<CollateralType | ''>('');
+  const [isMultiHomeOwner, setIsMultiHomeOwner] = useState(false);
 
   const handleClassify = async () => {
     if (!customerName.trim() || !inquiry.trim()) {
@@ -42,6 +43,7 @@ export default function InquiryForm() {
       selectedLoanType || undefined,
       hasThirdPartyCollateral,
       selectedCollateralType || undefined,
+      isMultiHomeOwner,
     );
     setIsLoading(false);
 
@@ -77,6 +79,7 @@ export default function InquiryForm() {
     setIsSaved(false);
     setHasThirdPartyCollateral(false);
     setSelectedCollateralType('');
+    setIsMultiHomeOwner(false);
   };
 
   return (
@@ -261,6 +264,32 @@ export default function InquiryForm() {
             <div
               className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-sm transition-all duration-500 ${
                 hasThirdPartyCollateral ? 'left-7' : 'left-1'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* 세대 기준 다주택 여부 (규제 대응용) */}
+        <div className="mb-10 p-5 rounded-2xl bg-bg-secondary border border-black/[0.03] flex items-center justify-between group hover:bg-white hover:border-primary/20 transition-all duration-300">
+          <div>
+            <label className="block text-sm font-bold text-text-primary mb-1">
+              세대 기준 다주택 여부
+            </label>
+            <p className="text-text-muted text-[12px] font-medium">
+              규제지역 아파트 담보대출 시 기한연장 가능 여부 판별에 활용됩니다
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsMultiHomeOwner(!isMultiHomeOwner)}
+            disabled={isLoading}
+            className={`w-14 h-8 rounded-full transition-all duration-500 relative cursor-pointer ${
+              isMultiHomeOwner ? 'bg-primary' : 'bg-black/[0.1]'
+            }`}
+          >
+            <div
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-sm transition-all duration-500 ${
+                isMultiHomeOwner ? 'left-7' : 'left-1'
               }`}
             />
           </button>

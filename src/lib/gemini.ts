@@ -18,12 +18,14 @@ function buildPrompt(
   selectedLoanType?: string,
   hasThirdPartyCollateral?: boolean,
   selectedCollateralType?: string,
+  isMultiHomeOwner?: boolean,
 ): string {
   const entityHint = entityType ? `\n사업자 구분 힌트: ${entityType}` : '';
   const bizHint = selectedBusinessType ? `\n업종 힌트: ${selectedBusinessType}` : '';
   const loanHint = selectedLoanType ? `\n대출 유형 힌트: ${selectedLoanType}` : '';
   const collateralHint = hasThirdPartyCollateral ? `\n제3자 담보 제공 여부: 예 (제3자가 담보를 제공함)` : '\n제3자 담보 제공 여부: 아니오';
   const collateralTypeHint = selectedCollateralType ? `\n담보 구분 힌트: ${selectedCollateralType}` : '';
+  const multiHomeHint = isMultiHomeOwner ? `\n세대 기준 다주택 여부: 예 (다주택자)` : '\n세대 기준 다주택 여부: 아니오';
 
   return `당신은 KB금융그룹의 기업여신(기업대출) 전문 심사역입니다.
 아래 고객 문의를 분석하여 정확하게 분류하고, 필요한 서류를 빠짐없이 안내하세요.
@@ -95,6 +97,13 @@ function buildPrompt(
   추가서류: 해당 업종 관련 인허가/등록 서류
   규제: 업종 특성에 따른 개별 규제 확인
 
+■ [부동산 대출 특수 규제 - 중요]:
+  1. 다주택자 규제: 세대 기준 다주택자가 규제지역 아파트를 담보로 대출 중인 경우, 원칙적으로 '기한연장'이 불가능함.
+  2. 만약 고객이 다주택자이고 기한연장을 요청한다면:
+     - 우선순위를 '높음'으로 설정
+     - regulatory_flags에 "다주택자 기한연장 제한" 추가
+     - ai_response에 해당 사유로 인해 기한연장이 거절될 수 있음을 강력히 고지
+
 ═══════════════════════════════════
 [서류 생성 규칙 - 4단계 누적]
 ═══════════════════════════════════
@@ -127,7 +136,7 @@ function buildPrompt(
 ═══════════════════════════════════
 [고객 정보]
 ═══════════════════════════════════
-고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}${collateralHint}${collateralTypeHint}
+고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}${collateralHint}${collateralTypeHint}${multiHomeHint}
 문의 내용: ${inquiry}
 
 ═══════════════════════════════════
@@ -157,6 +166,7 @@ export async function classifyConsultation(
   selectedLoanType?: string,
   hasThirdPartyCollateral?: boolean,
   selectedCollateralType?: string,
+  isMultiHomeOwner?: boolean,
 ): Promise<{ result?: ConsultationResult; error?: string; rawResponse?: string }> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
@@ -175,6 +185,7 @@ export async function classifyConsultation(
       selectedLoanType,
       hasThirdPartyCollateral,
       selectedCollateralType,
+      isMultiHomeOwner,
     );
 
     const response = await ai.models.generateContent({

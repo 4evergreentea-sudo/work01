@@ -32,6 +32,7 @@ export async function saveConsultation(
       ai_response: result.ai_response,
       regulatory_flags: result.regulatory_flags || [],
       has_third_party_collateral: result.has_third_party_collateral ?? false,
+      is_multi_home_owner: result.is_multi_home_owner ?? false,
     });
 
     if (error) {
