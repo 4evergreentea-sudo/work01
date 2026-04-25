@@ -204,71 +204,95 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
         <p className="text-text-primary text-[15px] leading-relaxed font-medium">"{result.ai_response}"</p>
       </div>
 
-      {/* 하단 저장 및 파일 업로드 섹션 */}
-      <div className="pt-6 border-t border-black/[0.04]">
-        {!isSaved ? (
-          <button id="btn-save" onClick={onSave} disabled={isSaving} className="btn-primary w-full sm:w-auto px-10">
-            {isSaving ? '상담 내역 저장 중...' : '💾 분석 결과 저장하기'}
-          </button>
-        ) : (
-          <div className="space-y-6">
-            <div className="flex items-center gap-2.5 text-green-600 font-bold text-sm bg-green-50 p-4 rounded-2xl border border-green-100">
-              ✅ 상담 내역이 안전하게 저장되었습니다. 이제 안내된 서류를 업로드하실 수 있습니다.
+      {/* 하단 액션 섹션 (저장 및 파일 업로드) */}
+      <div className="space-y-10 pt-10 border-t border-black/[0.04]">
+        {/* Step 1: 저장하기 */}
+        <div>
+          <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-60 flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[10px]">1</span>
+            분석 결과 저장
+          </div>
+          {!isSaved ? (
+            <button id="btn-save" onClick={onSave} disabled={isSaving} className="btn-primary w-full sm:w-auto px-12 shadow-xl shadow-primary/20">
+              {isSaving ? '상담 내역 저장 중...' : '💾 분석 결과 저장하기'}
+            </button>
+          ) : (
+            <div className="flex items-center gap-2.5 text-green-600 font-bold text-[15px] bg-green-50 p-5 rounded-2xl border border-green-100 animate-fade-in">
+              ✅ 상담 내역이 안전하게 저장되었습니다. (ID: {savedId?.substring(0, 8)})
             </div>
+          )}
+        </div>
 
-            {/* 파일 업로드 영역 */}
-            <div className="p-8 rounded-[32px] bg-bg-secondary border-2 border-dashed border-black/[0.08] hover:border-primary/50 transition-all duration-300">
-              <div className="text-center">
-                <div className="text-4xl mb-4">📁</div>
-                <h4 className="text-[16px] font-bold text-text-primary mb-2">서류 업로드</h4>
-                <p className="text-text-muted text-sm mb-6">안내받은 필요 서류를 선택하거나 드래그하여 올려주세요</p>
+        {/* Step 2: 서류 업로드 */}
+        <div className={`transition-all duration-500 ${!isSaved ? 'opacity-50 grayscale pointer-events-none' : 'opacity-100'}`}>
+          <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-60 flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[10px]">2</span>
+            필요 서류 제출 (선택 사항)
+          </div>
+          
+          <div className={`p-8 rounded-[32px] bg-bg-secondary border-2 border-dashed transition-all duration-300 ${isSaved ? 'border-primary/30 hover:border-primary bg-white' : 'border-black/[0.08]'}`}>
+            {!isSaved && (
+              <div className="mb-4 text-xs font-bold text-text-muted text-center">
+                ⚠️ 서류 업로드를 위해 먼저 분석 결과를 저장해주세요.
+              </div>
+            )}
+            
+            <div className="text-center">
+              <div className="text-4xl mb-4">📁</div>
+              <h4 className="text-[16px] font-bold text-text-primary mb-2">서류 업로드</h4>
+              <p className="text-text-muted text-sm mb-6">안내받은 필요 서류를 선택하거나 드래그하여 올려주세요</p>
+              
+              <input
+                type="file"
+                multiple
+                id="file-upload"
+                className="hidden"
+                onChange={handleFileChange}
+                disabled={!isSaved}
+              />
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <label 
+                  htmlFor="file-upload" 
+                  className={`btn-secondary py-3 px-8 cursor-pointer transition-all duration-300 ${isSaved ? 'hover:bg-bg-secondary border-black/10' : 'opacity-50 cursor-not-allowed'}`}
+                >
+                  파일 선택하기
+                </label>
                 
-                <input
-                  type="file"
-                  multiple
-                  id="file-upload"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <label htmlFor="file-upload" className="btn-secondary py-3 px-6 cursor-pointer hover:bg-white transition-colors">
-                    파일 선택하기
-                  </label>
-                  {selectedFiles.length > 0 && (
-                    <button
-                      onClick={handleUpload}
-                      disabled={isUploading}
-                      className="btn-primary py-3 px-8 shadow-xl shadow-primary/20"
-                    >
-                      {isUploading ? '업로드 중...' : `${selectedFiles.length}개 파일 제출하기`}
-                    </button>
-                  )}
-                </div>
-
-                {selectedFiles.length > 0 && (
-                  <div className="mt-6 text-left max-w-md mx-auto">
-                    <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-3 opacity-60">선택된 파일</div>
-                    <div className="space-y-2">
-                      {selectedFiles.map((f, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 bg-white rounded-xl border border-black/[0.03] text-sm">
-                          <span className="font-medium truncate pr-4">📄 {f.name}</span>
-                          <span className="text-[11px] text-text-muted whitespace-nowrap">{(f.size / 1024).toFixed(1)}KB</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {uploadComplete && (
-                  <div className="mt-6 p-5 bg-primary/10 rounded-2xl border border-primary/20 animate-fade-in">
-                    <div className="text-[15px] font-bold text-text-primary mb-1">✨ 업로드 완료!</div>
-                    <p className="text-[13px] text-text-secondary">제출하신 {uploadedUrls.length}개의 서류가 상담 내역에 연결되었습니다.</p>
-                  </div>
+                {selectedFiles.length > 0 && isSaved && (
+                  <button
+                    onClick={handleUpload}
+                    disabled={isUploading}
+                    className="btn-primary py-3 px-10 shadow-xl shadow-primary/30 animate-bounce-subtle"
+                  >
+                    {isUploading ? '제출 중...' : `${selectedFiles.length}개 서류 제출 완료하기`}
+                  </button>
                 )}
               </div>
+
+              {selectedFiles.length > 0 && (
+                <div className="mt-8 text-left max-w-md mx-auto animate-fade-in">
+                  <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-3 opacity-60">제출 대기 파일</div>
+                  <div className="space-y-2">
+                    {selectedFiles.map((f, i) => (
+                      <div key={i} className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-black/[0.05] shadow-sm text-sm">
+                        <span className="font-semibold truncate pr-4 text-text-primary">📄 {f.name}</span>
+                        <span className="text-[11px] text-text-muted font-bold">{(f.size / 1024).toFixed(1)}KB</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {uploadComplete && (
+                <div className="mt-8 p-6 bg-green-50 rounded-2xl border border-green-100 animate-fade-in-up">
+                  <div className="text-[16px] font-bold text-green-700 mb-1">✨ 서류 제출 완료!</div>
+                  <p className="text-[13px] text-green-600 font-medium">제출하신 {uploadedUrls.length}개의 서류가 상담 내역에 성공적으로 연결되었습니다.</p>
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
