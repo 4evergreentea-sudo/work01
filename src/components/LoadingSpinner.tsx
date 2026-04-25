@@ -18,7 +18,7 @@ export default function LoadingSpinner() {
           className="absolute inset-3 rounded-full"
           style={{
             border: '3px solid transparent',
-            borderBottomColor: 'var(--color-accent)',
+            borderBottomColor: 'var(--color-primary-light)',
             animation: 'spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse',
           }}
         />

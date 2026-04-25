@@ -105,24 +105,26 @@ export default function Dashboard() {
 
       {/* 사업자 유형 비율 바 */}
       <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-        <div className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-4">사업자 유형 비율</div>
-        <div className="flex rounded-xl overflow-hidden h-8">
+        <div className="text-xs text-text-muted font-black uppercase tracking-widest mb-4 opacity-60">사업자 유형 비율</div>
+        <div className="flex rounded-2xl overflow-hidden h-10 bg-bg-secondary p-1">
           {individualCount > 0 && (
-            <div className="flex items-center justify-center text-xs font-bold text-white transition-all duration-500"
+            <div className="flex items-center justify-center text-[13px] font-black text-white transition-all duration-700 ease-out rounded-xl"
               style={{
                 width: `${(individualCount / total) * 100}%`,
-                background: 'linear-gradient(135deg, #3B82F6, #60A5FA)',
-                minWidth: '40px',
+                background: '#3B82F6',
+                minWidth: '60px',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
               }}>
               👤 {Math.round((individualCount / total) * 100)}%
             </div>
           )}
           {corporateCount > 0 && (
-            <div className="flex items-center justify-center text-xs font-bold text-white transition-all duration-500"
+            <div className="flex items-center justify-center text-[13px] font-black text-white transition-all duration-700 ease-out rounded-xl ml-1"
               style={{
                 width: `${(corporateCount / total) * 100}%`,
-                background: 'linear-gradient(135deg, #8B5CF6, #A78BFA)',
-                minWidth: '40px',
+                background: '#8B5CF6',
+                minWidth: '60px',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
               }}>
               🏢 {Math.round((corporateCount / total) * 100)}%
             </div>
@@ -133,54 +135,48 @@ export default function Dashboard() {
       {/* 업종별 + 대출유형별 차트 (2열) */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 업종별 분포 */}
-        <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <div className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-5">업종별 분포</div>
-          <div className="space-y-3">
+        <div className="glass-card p-7 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <div className="text-xs text-text-muted font-black uppercase tracking-widest mb-6 opacity-60">업종별 분포</div>
+          <div className="space-y-4">
             {bizDistribution.map((d) => (
               <div key={d.type}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm text-text-primary font-medium">{d.icon} {d.type}</span>
-                  <span className="text-xs text-text-muted font-bold">{d.count}건</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[14px] text-text-primary font-bold">{d.icon} {d.type}</span>
+                  <span className="text-xs text-text-muted font-black">{d.count}건</span>
                 </div>
-                <div className="w-full h-3 rounded-full overflow-hidden" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
-                  <div className="h-full rounded-full transition-all duration-700 ease-out"
+                <div className="w-full h-2.5 rounded-full overflow-hidden bg-bg-secondary border border-black/[0.02]">
+                  <div className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{
                       width: `${(d.count / maxBizCount) * 100}%`,
-                      background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))',
+                      background: 'var(--color-primary)',
                       minWidth: '8px',
                     }} />
                 </div>
               </div>
             ))}
-            {bizDistribution.length === 0 && (
-              <p className="text-text-muted text-sm text-center py-4">데이터 없음</p>
-            )}
           </div>
         </div>
 
         {/* 대출유형별 분포 */}
-        <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-          <div className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-5">대출유형별 분포</div>
-          <div className="space-y-3">
+        <div className="glass-card p-7 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+          <div className="text-xs text-text-muted font-black uppercase tracking-widest mb-6 opacity-60">대출유형별 분포</div>
+          <div className="space-y-4">
             {loanDistribution.map((d) => (
               <div key={d.type}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm text-text-primary font-medium">{d.icon} {d.type}</span>
-                  <span className="text-xs text-text-muted font-bold">{d.count}건</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[14px] text-text-primary font-bold">{d.icon} {d.type}</span>
+                  <span className="text-xs text-text-muted font-black">{d.count}건</span>
                 </div>
-                <div className="w-full h-3 rounded-full overflow-hidden" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
-                  <div className="h-full rounded-full transition-all duration-700 ease-out"
+                <div className="w-full h-2.5 rounded-full overflow-hidden bg-bg-secondary border border-black/[0.02]">
+                  <div className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{
                       width: `${(d.count / maxLoanCount) * 100}%`,
-                      background: 'linear-gradient(90deg, #14B8A6, #2DD4BF)',
+                      background: '#14B8A6',
                       minWidth: '8px',
                     }} />
                 </div>
               </div>
             ))}
-            {loanDistribution.length === 0 && (
-              <p className="text-text-muted text-sm text-center py-4">데이터 없음</p>
-            )}
           </div>
         </div>
       </div>

@@ -139,9 +139,9 @@ export default function InquiryList() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: 'rgba(15, 23, 42, 0.5)', borderBottom: '1px solid rgba(148, 163, 184, 0.08)' }}>
+                <tr className="bg-bg-secondary border-b border-black/[0.04]">
                   {['시간', '기업명', '사업자', '업종', '대출유형', '우선순위', '서류'].map((h) => (
-                    <th key={h} className="text-left px-4 py-4 text-text-muted font-semibold text-xs uppercase tracking-wider">{h}</th>
+                    <th key={h} className="text-left px-6 py-4 text-text-muted font-black text-[10px] uppercase tracking-widest opacity-60">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -152,11 +152,8 @@ export default function InquiryList() {
                   return (
                     <tr
                       key={record.id}
-                      className="transition-all duration-300 cursor-pointer"
-                      style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.05)' }}
+                      className="transition-all duration-300 cursor-pointer hover:bg-primary/[0.03] group border-b border-black/[0.02]"
                       onClick={() => setSelectedRecord(record)}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.04)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                     >
                       <td className="px-4 py-4 text-text-muted text-xs whitespace-nowrap">
                         {new Date(record.created_at).toLocaleString('ko-KR', {
@@ -237,32 +234,32 @@ export default function InquiryList() {
             </div>
 
             {/* 정보 그리드 */}
-            <div className="grid gap-4 sm:grid-cols-2 mb-5">
-              <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-                <div className="text-xs text-text-muted mb-1 font-semibold">기업명</div>
-                <p className="text-text-primary text-sm font-bold">{selectedRecord.customer_name}</p>
+            <div className="grid gap-4 sm:grid-cols-2 mb-6">
+              <div className="p-5 rounded-2xl bg-bg-secondary border border-black/[0.02]">
+                <div className="text-[10px] text-text-muted mb-2 font-black uppercase tracking-widest opacity-60">기업명</div>
+                <p className="text-text-primary text-[15px] font-bold">{selectedRecord.customer_name}</p>
               </div>
-              <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-                <div className="text-xs text-text-muted mb-1 font-semibold">요약</div>
-                <p className="text-text-primary text-sm">{selectedRecord.summary}</p>
+              <div className="p-5 rounded-2xl bg-bg-secondary border border-black/[0.02]">
+                <div className="text-[10px] text-text-muted mb-2 font-black uppercase tracking-widest opacity-60">분석 요약</div>
+                <p className="text-text-primary text-[14px] font-medium leading-snug">{selectedRecord.summary}</p>
               </div>
             </div>
 
             {/* 문의 내용 */}
-            <div className="p-4 rounded-xl mb-5" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-              <div className="text-xs text-text-muted mb-2 font-semibold">문의 내용</div>
-              <p className="text-text-primary text-sm leading-relaxed">{selectedRecord.inquiry_text}</p>
+            <div className="p-5 rounded-2xl mb-6 bg-bg-secondary border border-black/[0.02]">
+              <div className="text-[10px] text-text-muted mb-3 font-black uppercase tracking-widest opacity-60">전체 문의 내용</div>
+              <p className="text-text-primary text-[14px] leading-relaxed font-medium">{selectedRecord.inquiry_text}</p>
             </div>
 
             {/* 서류 목록 */}
             {selectedRecord.required_docs && selectedRecord.required_docs.length > 0 && (
-              <div className="p-4 rounded-xl mb-5" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-                <div className="text-xs text-text-muted mb-3 font-semibold">📋 필요 서류 ({selectedRecord.required_docs.length}건)</div>
-                <div className="space-y-2">
+              <div className="p-6 rounded-2xl mb-6 bg-white border border-black/[0.04] shadow-sm">
+                <div className="text-[10px] text-text-muted mb-4 font-black uppercase tracking-widest opacity-60">📋 필요 서류 ({selectedRecord.required_docs.length}건)</div>
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {selectedRecord.required_docs.map((doc, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-text-primary">
-                      <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold flex-shrink-0"
-                        style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60A5FA' }}>{i + 1}</span>
+                    <div key={i} className="flex items-center gap-3 text-[13.5px] text-text-primary font-bold">
+                      <span className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black flex-shrink-0"
+                        style={{ background: 'var(--color-primary)', color: '#111827' }}>{i + 1}</span>
                       {doc}
                     </div>
                   ))}
@@ -272,9 +269,9 @@ export default function InquiryList() {
 
             {/* AI 응답 */}
             {selectedRecord.ai_response && (
-              <div className="p-4 rounded-xl" style={{ background: 'rgba(59, 130, 246, 0.04)', border: '1px solid rgba(59, 130, 246, 0.08)', borderLeft: '4px solid var(--color-primary)' }}>
-                <div className="text-xs text-text-muted mb-2 font-semibold">💬 AI 안내 메시지</div>
-                <p className="text-text-primary text-sm leading-relaxed whitespace-pre-line">{selectedRecord.ai_response}</p>
+              <div className="p-6 rounded-2xl bg-[#F9FAFB] border border-black/[0.03] border-l-[6px] border-l-primary">
+                <div className="text-[10px] text-text-muted mb-3 font-black uppercase tracking-widest opacity-60">💬 AI 가이드 메시지</div>
+                <p className="text-text-primary text-[14px] leading-relaxed font-medium whitespace-pre-line">{selectedRecord.ai_response}</p>
               </div>
             )}
           </div>

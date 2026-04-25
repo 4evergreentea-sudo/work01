@@ -14,13 +14,13 @@ interface ResultCardProps {
 function getPriorityStyle(priority: string) {
   switch (priority) {
     case '높음':
-      return { bg: 'var(--color-urgency-high-bg)', color: 'var(--color-urgency-high)', icon: '🔴', glow: 'rgba(248, 113, 113, 0.15)' };
+      return { bg: 'rgba(239, 68, 68, 0.08)', color: '#EF4444', icon: '🔴', border: 'rgba(239, 68, 68, 0.15)' };
     case '보통':
-      return { bg: 'var(--color-urgency-medium-bg)', color: 'var(--color-urgency-medium)', icon: '🟡', glow: 'rgba(251, 191, 36, 0.15)' };
+      return { bg: 'rgba(245, 158, 11, 0.08)', color: '#F59E0B', icon: '🟡', border: 'rgba(245, 158, 11, 0.15)' };
     case '낮음':
-      return { bg: 'var(--color-urgency-low-bg)', color: 'var(--color-urgency-low)', icon: '🟢', glow: 'rgba(52, 211, 153, 0.15)' };
+      return { bg: 'rgba(16, 185, 129, 0.08)', color: '#10B981', icon: '🟢', border: 'rgba(16, 185, 129, 0.15)' };
     default:
-      return { bg: 'var(--color-surface-solid)', color: 'var(--color-text-secondary)', icon: '⚪', glow: 'transparent' };
+      return { bg: 'var(--color-bg-secondary)', color: 'var(--color-text-secondary)', icon: '⚪', border: 'var(--color-border)' };
   }
 }
 
@@ -53,42 +53,42 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
         </div>
         <div className="flex gap-2 flex-wrap">
           {/* 사업자 구분 뱃지 */}
-          <span className="badge-entity px-3 py-1.5 rounded-xl text-xs font-bold"
+          <span className="px-3.5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5"
             style={{
               background: result.business_entity_type === '법인사업자'
-                ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.1))'
-                : 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.1))',
-              color: result.business_entity_type === '법인사업자' ? '#A78BFA' : '#60A5FA',
+                ? 'rgba(139, 92, 246, 0.06)'
+                : 'rgba(59, 130, 246, 0.06)',
+              color: result.business_entity_type === '법인사업자' ? '#8B5CF6' : '#3B82F6',
               border: result.business_entity_type === '법인사업자'
-                ? '1px solid rgba(139, 92, 246, 0.2)'
-                : '1px solid rgba(59, 130, 246, 0.2)',
+                ? '1px solid rgba(139, 92, 246, 0.12)'
+                : '1px solid rgba(59, 130, 246, 0.12)',
             }}>
             {result.business_entity_type === '법인사업자' ? '🏢' : '👤'} {result.business_entity_type}
           </span>
           {/* 업종 뱃지 */}
-          <span className="px-3 py-1.5 rounded-xl text-xs font-bold"
+          <span className="px-3.5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5"
             style={{
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.08))',
-              color: 'var(--color-primary-light)',
-              border: '1px solid rgba(59, 130, 246, 0.15)',
+              background: 'rgba(79, 70, 229, 0.06)',
+              color: '#4F46E5',
+              border: '1px solid rgba(79, 70, 229, 0.12)',
             }}>
             {bizIcon} {result.business_type}
           </span>
           {/* 대출 유형 뱃지 */}
-          <span className="px-3 py-1.5 rounded-xl text-xs font-bold"
+          <span className="px-3.5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5"
             style={{
-              background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.12), rgba(45, 212, 191, 0.08))',
-              color: '#2DD4BF',
-              border: '1px solid rgba(20, 184, 166, 0.15)',
+              background: 'rgba(20, 184, 166, 0.06)',
+              color: '#14B8A6',
+              border: '1px solid rgba(20, 184, 166, 0.12)',
             }}>
             {loanIcon} {result.loan_type}
           </span>
           {/* 우선순위 뱃지 */}
-          <span className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5"
+          <span className="px-3.5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5"
             style={{
               backgroundColor: priority.bg,
               color: priority.color,
-              border: `1px solid ${priority.glow}`,
+              border: `1px solid ${priority.border}`,
             }}>
             {priority.icon} {result.priority}
           </span>
@@ -96,44 +96,40 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
       </div>
 
       {/* 분석 요약 그리드 */}
-      <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <div className="info-cell p-4 rounded-2xl"
-          style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-          <div className="text-xs text-text-muted mb-1.5 font-semibold uppercase tracking-wider">대출 용도</div>
-          <p className="text-text-primary text-sm font-bold">{result.loan_purpose || '-'}</p>
+      <div className="grid gap-5 sm:grid-cols-3 mb-8">
+        <div className="bg-bg-secondary p-5 rounded-2xl border border-black/[0.03]">
+          <div className="text-[11px] text-text-muted mb-2 font-black uppercase tracking-widest opacity-60">대출 용도</div>
+          <p className="text-text-primary text-[15px] font-bold">{result.loan_purpose || '-'}</p>
         </div>
-        <div className="info-cell p-4 rounded-2xl"
-          style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-          <div className="text-xs text-text-muted mb-1.5 font-semibold uppercase tracking-wider">담보 형태</div>
-          <p className="text-text-primary text-sm font-bold">{result.collateral_type || '-'}</p>
+        <div className="bg-bg-secondary p-5 rounded-2xl border border-black/[0.03]">
+          <div className="text-[11px] text-text-muted mb-2 font-black uppercase tracking-widest opacity-60">담보 형태</div>
+          <p className="text-text-primary text-[15px] font-bold">{result.collateral_type || '-'}</p>
         </div>
-        <div className="info-cell p-4 rounded-2xl sm:col-span-1"
-          style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-          <div className="text-xs text-text-muted mb-1.5 font-semibold uppercase tracking-wider">요약</div>
-          <p className="text-text-primary text-sm font-bold">{result.summary}</p>
+        <div className="bg-bg-secondary p-5 rounded-2xl border border-black/[0.03]">
+          <div className="text-[11px] text-text-muted mb-2 font-black uppercase tracking-widest opacity-60">요약</div>
+          <p className="text-text-primary text-[15px] font-bold leading-snug">{result.summary}</p>
         </div>
       </div>
 
       {/* 규제 검토 알림 */}
       {result.regulatory_flags && result.regulatory_flags.length > 0 && (
-        <div className="p-5 rounded-2xl mb-6 border-l-4"
+        <div className="p-6 rounded-2xl mb-8 border-l-[6px]"
           style={{
-            background: 'linear-gradient(135deg, rgba(248, 113, 113, 0.06), rgba(251, 146, 60, 0.04))',
-            borderLeft: '4px solid var(--color-urgency-high)',
-            border: '1px solid rgba(248, 113, 113, 0.12)',
-            borderLeftWidth: '4px',
-            borderLeftStyle: 'solid',
-            borderLeftColor: 'var(--color-urgency-high)',
+            background: 'rgba(239, 68, 68, 0.04)',
+            borderLeftColor: '#EF4444',
+            borderTop: '1px solid rgba(239, 68, 68, 0.08)',
+            borderRight: '1px solid rgba(239, 68, 68, 0.08)',
+            borderBottom: '1px solid rgba(239, 68, 68, 0.08)',
           }}>
-          <div className="text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2"
-            style={{ color: 'var(--color-urgency-high)' }}>
-            ⚠️ 규제 검토 필요
+          <div className="text-[11px] font-black uppercase tracking-widest mb-4 flex items-center gap-2"
+            style={{ color: '#EF4444' }}>
+            ⚠️ 규제 및 심사 주의사항
           </div>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {result.regulatory_flags.map((flag, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm text-text-primary">
-                <span className="flex-shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-xs mt-0.5"
-                  style={{ background: 'rgba(248, 113, 113, 0.15)', color: 'var(--color-urgency-high)' }}>
+              <li key={i} className="flex items-start gap-3 text-[14px] text-text-primary font-medium">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mt-0.5"
+                  style={{ background: '#EF4444', color: 'white' }}>
                   !
                 </span>
                 {flag}
@@ -144,46 +140,40 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
       )}
 
       {/* 필요 서류 체크리스트 */}
-      <div className="p-6 rounded-2xl mb-6"
-        style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.06)' }}>
-        <div className="text-xs text-text-muted mb-4 font-semibold uppercase tracking-wider flex items-center gap-2">
-          📋 필요 서류 목록 <span className="text-text-muted font-normal">({result.required_docs.length}건)</span>
+      <div className="p-7 rounded-[28px] mb-8 bg-white border border-black/[0.04] shadow-sm">
+        <div className="text-[11px] text-text-muted mb-5 font-black uppercase tracking-widest flex items-center gap-2 opacity-60">
+          📋 준비 서류 체크리스트 <span className="font-medium">({result.required_docs.length}건)</span>
         </div>
-        <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           {result.required_docs.map((doc, i) => (
-            <div key={i} className="doc-item flex items-center gap-3 p-3 rounded-xl transition-all duration-200"
-              style={{ background: 'rgba(59, 130, 246, 0.04)', border: '1px solid rgba(59, 130, 246, 0.08)' }}>
-              <span className="flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold"
-                style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15))', color: 'var(--color-primary-light)' }}>
+            <div key={i} className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 hover:bg-bg-secondary border border-transparent hover:border-black/[0.03]">
+              <span className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-[13px] font-black"
+                style={{ background: 'var(--color-primary)', color: '#111827' }}>
                 {i + 1}
               </span>
-              <span className="text-text-primary text-sm">{doc}</span>
+              <span className="text-text-primary text-[14.5px] font-semibold">{doc}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* 고객 안내 메시지 */}
-      <div className="p-5 rounded-2xl mb-7 relative"
-        style={{
-          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(99, 102, 241, 0.04))',
-          border: '1px solid rgba(59, 130, 246, 0.1)',
-          borderLeft: '4px solid var(--color-primary)',
-        }}>
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-xs text-text-muted font-semibold uppercase tracking-wider">💬 고객 안내 메시지</div>
+      <div className="p-7 rounded-[28px] mb-10 relative overflow-hidden bg-[#F9FAFB] border border-black/[0.03]">
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-[11px] text-text-muted font-black uppercase tracking-widest opacity-60">💬 상담 요약 및 안내</div>
           <button
             onClick={handleCopyResponse}
-            className="text-xs px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer"
-            style={{
-              background: copied ? 'rgba(52, 211, 153, 0.15)' : 'rgba(59, 130, 246, 0.1)',
-              color: copied ? 'var(--color-success)' : 'var(--color-primary-light)',
-              border: copied ? '1px solid rgba(52, 211, 153, 0.2)' : '1px solid rgba(59, 130, 246, 0.15)',
-            }}>
-            {copied ? '✅ 복사됨' : '📋 복사'}
+            className={`text-xs px-4 py-2 rounded-xl font-bold transition-all duration-300 cursor-pointer ${
+              copied 
+                ? 'bg-green-500 text-white' 
+                : 'bg-white text-text-primary shadow-sm hover:shadow-md border border-black/[0.05]'
+            }`}
+          >
+            {copied ? '✅ 복사완료' : '📋 메시지 복사'}
           </button>
         </div>
-        <p className="text-text-primary text-sm leading-relaxed whitespace-pre-line">"{result.ai_response}"</p>
+        <p className="text-text-primary text-[15px] leading-relaxed font-medium">"{result.ai_response}"</p>
       </div>
 
       {/* 저장 버튼 */}

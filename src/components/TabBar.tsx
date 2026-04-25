@@ -3,7 +3,7 @@ interface TabBarProps {
   onTabChange: (tab: 'input' | 'list' | 'dashboard') => void;
 }
 
-/** 3탭 전환 UI — 프리미엄 */
+/** KB 스타일 탭 바 — 고품격 화이트 & 스타 옐로우 */
 export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
   const tabs = [
     { id: 'input' as const, label: '상담 입력', icon: '✏️' },
@@ -12,15 +12,8 @@ export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 mb-10">
-      <div
-        className="flex rounded-2xl p-1.5 gap-1"
-        style={{
-          background: 'rgba(15, 23, 42, 0.6)',
-          border: '1px solid rgba(148, 163, 184, 0.08)',
-          backdropFilter: 'blur(12px)',
-        }}
-      >
+    <div className="max-w-md mx-auto px-4 mb-12">
+      <div className="flex bg-white rounded-[24px] p-2 border border-black/[0.04] shadow-lg shadow-black/[0.02]">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -28,19 +21,13 @@ export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
               key={tab.id}
               id={`tab-${tab.id}`}
               onClick={() => onTabChange(tab.id)}
-              className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-400 cursor-pointer flex items-center justify-center gap-2"
-              style={{
-                background: isActive
-                  ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15))'
-                  : 'transparent',
-                color: isActive ? '#fff' : 'var(--color-text-muted)',
-                border: isActive ? '1px solid rgba(59, 130, 246, 0.25)' : '1px solid transparent',
-                boxShadow: isActive
-                  ? '0 0 20px -5px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
-                  : 'none',
-              }}
+              className={`flex-1 py-3.5 px-4 rounded-[18px] font-bold text-[15px] transition-all duration-500 cursor-pointer flex items-center justify-center gap-2.5 ${
+                isActive 
+                  ? 'bg-primary text-[#111827] shadow-lg shadow-primary/20 scale-[1.02]' 
+                  : 'bg-transparent text-text-secondary hover:text-text-primary'
+              }`}
             >
-              <span style={{ fontSize: '15px' }}>{tab.icon}</span>
+              <span className="text-[18px]">{tab.icon}</span>
               {tab.label}
             </button>
           );

@@ -74,22 +74,17 @@ export default function InquiryForm() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 space-y-8">
+    <div className="max-w-3xl mx-auto px-4 space-y-8">
       {/* 입력 폼 카드 */}
-      <div className="glass-card p-8 animate-fade-in-up">
-        <div
-          className="h-1 w-16 rounded-full mb-6"
-          style={{ background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }}
-        />
-
-        <h2 className="text-xl font-bold text-text-primary mb-2">기업여신 상담 정보 입력</h2>
-        <p className="text-text-muted text-sm mb-8">
-          기업 정보와 문의 내용을 입력하면 AI가 자동으로 분석하여 필요 서류를 안내합니다
+      <div className="glass-card p-10 animate-fade-in-up">
+        <h2 className="text-xl font-bold text-text-primary mb-2">상담 정보 입력</h2>
+        <p className="text-text-muted text-sm mb-10">
+          기업 정보와 문의 내용을 입력하시면 AI가 맞춤형 서류 안내를 도와드립니다.
         </p>
 
         {/* 기업명 */}
-        <div className="mb-6">
-          <label htmlFor="customer-name" className="block text-sm font-semibold text-text-secondary mb-2.5">
+        <div className="mb-8">
+          <label htmlFor="customer-name" className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2 ml-1">
             기업명 / 고객명
           </label>
           <input
@@ -104,34 +99,30 @@ export default function InquiryForm() {
         </div>
 
         {/* 사업자 구분 토글 */}
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-text-secondary mb-2.5">
+        <div className="mb-10">
+          <label className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-3 ml-1 opacity-70">
             사업자 구분
           </label>
-          <div className="flex gap-3">
-            {(['개인사업자', '법인사업자'] as const).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setEntityType(type)}
-                disabled={isLoading}
-                className="entity-toggle flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-300 cursor-pointer"
-                style={{
-                  background: entityType === type
-                    ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15))'
-                    : 'rgba(15, 23, 42, 0.6)',
-                  color: entityType === type ? '#fff' : 'var(--color-text-muted)',
-                  border: entityType === type
-                    ? '1px solid rgba(59, 130, 246, 0.3)'
-                    : '1px solid rgba(148, 163, 184, 0.12)',
-                  boxShadow: entityType === type
-                    ? '0 0 20px -5px rgba(59, 130, 246, 0.15)'
-                    : 'none',
-                }}
-              >
-                {type === '개인사업자' ? '👤' : '🏢'} {type}
-              </button>
-            ))}
+          <div className="flex gap-4">
+            {(['개인사업자', '법인사업자'] as const).map((type) => {
+              const isActive = entityType === type;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setEntityType(type)}
+                  disabled={isLoading}
+                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-sm transition-all duration-500 cursor-pointer flex items-center justify-center gap-2.5 ${
+                    isActive 
+                      ? 'bg-text-primary text-white shadow-xl shadow-text-primary/10' 
+                      : 'bg-bg-secondary text-text-secondary hover:bg-white border border-black/[0.03]'
+                  }`}
+                >
+                  <span className="text-lg">{type === '개인사업자' ? '👤' : '🏢'}</span>
+                  {type}
+                </button>
+              );
+            })}
           </div>
         </div>
 

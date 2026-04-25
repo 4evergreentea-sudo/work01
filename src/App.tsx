@@ -5,32 +5,36 @@ import InquiryForm from './components/InquiryForm';
 import InquiryList from './components/InquiryList';
 import Dashboard from './components/Dashboard';
 
-/** 기업여신 상담 AI 메인 앱 */
+/** KB 기업여신 상담 AI — 화이트 프리미엄 레이아웃 */
 export default function App() {
   const [activeTab, setActiveTab] = useState<'input' | 'list' | 'dashboard'>('input');
 
   return (
-    <div className="min-h-screen relative">
-      {/* 배경 효과 레이어 */}
+    <div className="relative min-h-screen">
+      {/* 배경 메시 그라데이션 */}
       <div className="mesh-bg" />
-      <div className="noise-overlay" />
 
-      {/* 콘텐츠 */}
+      {/* 컨텐츠 레이어 */}
       <div className="relative z-10">
         <Header />
-        <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-
-        <main className="pb-16">
-          {activeTab === 'input' && <InquiryForm />}
-          {activeTab === 'list' && <InquiryList />}
-          {activeTab === 'dashboard' && <Dashboard />}
+        
+        <main className="main-container py-8">
+          <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+          
+          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            {activeTab === 'input' && <InquiryForm />}
+            {activeTab === 'list' && <InquiryList />}
+            {activeTab === 'dashboard' && <Dashboard />}
+          </div>
         </main>
 
-        {/* 푸터 */}
-        <footer className="text-center py-8 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          <p className="text-text-muted text-xs">
-            © 2026 KB금융그룹 기업여신 상담 AI — 실습용 프로젝트
-          </p>
+        <footer className="w-full py-16 text-center">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="h-[1px] w-full bg-black/[0.03] mb-10" />
+            <p className="text-text-muted text-[12px] font-bold tracking-widest uppercase opacity-40">
+              © 2026 KB Corporate Loan AI Agent · Premium Digital Banking
+            </p>
+          </div>
         </footer>
       </div>
     </div>
