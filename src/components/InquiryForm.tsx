@@ -168,46 +168,12 @@ export default function InquiryForm() {
             </div>
           </div>
 
-          {/* 대출 유형 및 담보 구분 (2열 레이아웃) */}
+          {/* 담보 구분 및 대출 유형 (2열 레이아웃) */}
           <div className="grid gap-8 md:grid-cols-2">
-            {/* 대출 유형 */}
+            {/* 담보 구분 (사용자가 요청한 항목 우선 배치) */}
             <div>
               <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
-                02. 대출 유형
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedLoanType('')}
-                  className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
-                    selectedLoanType === '' 
-                      ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
-                      : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
-                  }`}
-                >
-                  🔄 자동 판별
-                </button>
-                {LOAN_TYPES.map((lt) => (
-                  <button
-                    key={lt}
-                    type="button"
-                    onClick={() => setSelectedLoanType(lt)}
-                    className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
-                      selectedLoanType === lt 
-                        ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
-                        : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
-                    }`}
-                  >
-                    {LOAN_TYPE_ICONS[lt]} {lt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 담보 구분 (사용자가 요청한 항목 강조) */}
-            <div>
-              <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
-                03. 담보 구분
+                02. 담보 구분
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -233,6 +199,40 @@ export default function InquiryForm() {
                     }`}
                   >
                     {COLLATERAL_TYPE_ICONS[ct]} {ct}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 대출 유형 */}
+            <div>
+              <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
+                03. 대출 유형
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedLoanType('')}
+                  className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                    selectedLoanType === '' 
+                      ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                      : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                  }`}
+                >
+                  🔄 자동 판별
+                </button>
+                {LOAN_TYPES.map((lt) => (
+                  <button
+                    key={lt}
+                    type="button"
+                    onClick={() => setSelectedLoanType(lt)}
+                    className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                      selectedLoanType === lt 
+                        ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                        : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                    }`}
+                  >
+                    {LOAN_TYPE_ICONS[lt]} {lt}
                   </button>
                 ))}
               </div>

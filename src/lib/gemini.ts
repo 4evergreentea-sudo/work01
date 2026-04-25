@@ -13,6 +13,7 @@ function cleanJsonResponse(raw: string): string {
 function buildPrompt(
   customerName: string,
   inquiry: string,
+  entityType?: BusinessEntityType,
   selectedBusinessType?: string,
   selectedLoanType?: string,
   hasThirdPartyCollateral?: boolean,
@@ -112,9 +113,9 @@ function buildPrompt(
   부동산 담보: 등기사항전부증명서(부동산), 감정평가서, 토지이용계획확인원, 임대차계약서(필요 시)
   보증서 담보: 보증서 사본, 보증약정서
   기타 담보: 담보물 관련 증빙
-112: 
-113: ■ [특수 상황 추가 서류]:
-114:   제3자 담보 제공 시: 제3자 담보 제공 승낙서(또는 동의서), 담보 제공자 신분증 사본, (법인일 경우) 이사회의사록 추가
+
+■ [특수 상황 추가 서류]:
+  제3자 담보 제공 시: 제3자 담보 제공 승낙서(또는 동의서), 담보 제공자 신분증 사본, (법인일 경우) 이사회의사록 추가
 
 ═══════════════════════════════════
 [우선순위 판단 기준]
