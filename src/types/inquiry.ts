@@ -41,6 +41,7 @@ export interface ConsultationResult {
   regulatory_flags: string[];
   has_third_party_collateral?: boolean;
   is_multi_home_owner?: boolean;
+  file_urls?: string[];
 }
 
 /** Supabase consultation_logs 레코드 타입 */

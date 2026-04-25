@@ -16,9 +16,9 @@ export async function saveConsultation(
   customerName: string,
   inquiryText: string,
   result: ConsultationResult,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
-    const { error } = await supabase.from('consultation_logs').insert({
+    const { data, error } = await supabase.from('consultation_logs').insert({
       customer_name: customerName,
       business_entity_type: result.business_entity_type,
       business_type: result.business_type,
@@ -33,17 +33,67 @@ export async function saveConsultation(
       regulatory_flags: result.regulatory_flags || [],
       has_third_party_collateral: result.has_third_party_collateral ?? false,
       is_multi_home_owner: result.is_multi_home_owner ?? false,
-    });
+      file_urls: result.file_urls || [],
+    }).select().single();
 
     if (error) {
       console.error('Supabase Insert Error:', error);
       return { success: false, error: `Supabase 저장 실패: ${error.message} (${error.code})` };
     }
-    console.log('Supabase Insert Success!');
-    return { success: true };
+    console.log('Supabase Insert Success!', data);
+    return { success: true, id: data.id };
   } catch (err) {
     const message = err instanceof Error ? err.message : '알 수 없는 오류';
     return { success: false, error: `Supabase 연결 실패: ${message}` };
+  }
+}
+
+/** 파일들을 Storage에 업로드하고 해당 상담 레코드의 file_urls 업데이트 */
+export async function uploadConsultationFiles(
+  logId: string,
+  files: File[],
+): Promise<{ success: boolean; urls?: string[]; error?: string }> {
+  try {
+    const uploadedUrls: string[] = [];
+
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${logId}/${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `consultations/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('consultation-files')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('File Upload Error:', uploadError);
+        continue;
+      }
+
+      // Public URL 생성
+      const { data: { publicUrl } } = supabase.storage
+        .from('consultation-files')
+        .getPublicUrl(filePath);
+      
+      uploadedUrls.push(publicUrl);
+    }
+
+    // DB 레코드 업데이트
+    if (uploadedUrls.length > 0) {
+      const { error: updateError } = await supabase
+        .from('consultation_logs')
+        .update({ file_urls: uploadedUrls })
+        .eq('id', logId);
+
+      if (updateError) {
+        return { success: false, error: `DB 업데이트 실패: ${updateError.message}` };
+      }
+    }
+
+    return { success: true, urls: uploadedUrls };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '알 수 없는 오류';
+    return { success: false, error: `파일 업로드 처리 실패: ${message}` };
   }
 }
 

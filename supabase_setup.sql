@@ -24,6 +24,7 @@ CREATE TABLE consultation_logs (
   regulatory_flags     JSONB DEFAULT '[]'::jsonb,        -- 규제 검토 항목 (RTI, DSR 등)
   has_third_party_collateral BOOLEAN DEFAULT false,      -- 제3자 담보 제공 여부
   is_multi_home_owner        BOOLEAN DEFAULT false,      -- 세대 기준 다주택 여부
+  file_urls            JSONB DEFAULT '[]'::jsonb,        -- 업로드된 파일 URL 리스트
   created_at           TIMESTAMPTZ DEFAULT now()
 );
 
@@ -36,3 +37,11 @@ CREATE INDEX idx_consultation_logs_date   ON consultation_logs(created_at DESC);
 -- 실습용: Row Level Security 비활성화
 -- ⚠️ 프로덕션 환경에서는 반드시 RLS 정책을 별도로 설정하세요
 ALTER TABLE consultation_logs DISABLE ROW LEVEL SECURITY;
+
+-- ============================================
+-- Supabase Storage 설정 안내
+-- ============================================
+-- 1. Supabase 대시보드 -> Storage -> New Bucket
+-- 2. Name: 'consultation-files'
+-- 3. Public Bucket: 체크 (실습 편의상)
+-- 4. 정책(Policies)에서 'Allow access to all' 등으로 업로드/조회 권한 설정 필요

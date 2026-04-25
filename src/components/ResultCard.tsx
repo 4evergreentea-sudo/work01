@@ -8,6 +8,7 @@ interface ResultCardProps {
   onSave: () => void;
   isSaving: boolean;
   isSaved: boolean;
+  savedId: string | null;
 }
 
 /** 우선순위별 스타일 */
@@ -25,15 +26,42 @@ function getPriorityStyle(priority: string) {
 }
 
 /** 기업여신 분석 결과 카드 — 프리미엄 */
-export default function ResultCard({ result, customerName, onSave, isSaving, isSaved }: ResultCardProps) {
+export default function ResultCard({ result, customerName, onSave, isSaving, isSaved, savedId }: ResultCardProps) {
   const priority = getPriorityStyle(result.priority);
   const [copied, setCopied] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const handleCopyResponse = () => {
     navigator.clipboard.writeText(result.ai_response).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
+      setUploadComplete(false);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!savedId || selectedFiles.length === 0) return;
+    setIsUploading(true);
+    const { success, urls, error } = await import('../lib/supabase').then(m => 
+      m.uploadConsultationFiles(savedId, selectedFiles)
+    );
+    setIsUploading(false);
+    if (success) {
+      setUploadComplete(true);
+      setUploadedUrls(urls || []);
+      setSelectedFiles([]);
+    } else {
+      alert(`업로드 실패: ${error}`);
+    }
   };
 
   const bizIcon = BUSINESS_TYPE_ICONS[result.business_type as keyof typeof BUSINESS_TYPE_ICONS] || '❓';
@@ -176,17 +204,70 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
         <p className="text-text-primary text-[15px] leading-relaxed font-medium">"{result.ai_response}"</p>
       </div>
 
-      {/* 저장 버튼 */}
-      <div>
-        {isSaved ? (
-          <div className="flex items-center gap-2.5 py-3 px-5 rounded-xl text-sm font-semibold"
-            style={{ background: 'rgba(52, 211, 153, 0.1)', color: 'var(--color-success)', border: '1px solid rgba(52, 211, 153, 0.15)' }}>
-            ✅ Supabase에 저장되었습니다
-          </div>
-        ) : (
-          <button id="btn-save" onClick={onSave} disabled={isSaving} className="btn-success w-full sm:w-auto">
-            {isSaving ? '저장 중...' : '💾 Supabase에 저장'}
+      {/* 하단 저장 및 파일 업로드 섹션 */}
+      <div className="pt-6 border-t border-black/[0.04]">
+        {!isSaved ? (
+          <button id="btn-save" onClick={onSave} disabled={isSaving} className="btn-primary w-full sm:w-auto px-10">
+            {isSaving ? '상담 내역 저장 중...' : '💾 분석 결과 저장하기'}
           </button>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2.5 text-green-600 font-bold text-sm bg-green-50 p-4 rounded-2xl border border-green-100">
+              ✅ 상담 내역이 안전하게 저장되었습니다. 이제 안내된 서류를 업로드하실 수 있습니다.
+            </div>
+
+            {/* 파일 업로드 영역 */}
+            <div className="p-8 rounded-[32px] bg-bg-secondary border-2 border-dashed border-black/[0.08] hover:border-primary/50 transition-all duration-300">
+              <div className="text-center">
+                <div className="text-4xl mb-4">📁</div>
+                <h4 className="text-[16px] font-bold text-text-primary mb-2">서류 업로드</h4>
+                <p className="text-text-muted text-sm mb-6">안내받은 필요 서류를 선택하거나 드래그하여 올려주세요</p>
+                
+                <input
+                  type="file"
+                  multiple
+                  id="file-upload"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <label htmlFor="file-upload" className="btn-secondary py-3 px-6 cursor-pointer hover:bg-white transition-colors">
+                    파일 선택하기
+                  </label>
+                  {selectedFiles.length > 0 && (
+                    <button
+                      onClick={handleUpload}
+                      disabled={isUploading}
+                      className="btn-primary py-3 px-8 shadow-xl shadow-primary/20"
+                    >
+                      {isUploading ? '업로드 중...' : `${selectedFiles.length}개 파일 제출하기`}
+                    </button>
+                  )}
+                </div>
+
+                {selectedFiles.length > 0 && (
+                  <div className="mt-6 text-left max-w-md mx-auto">
+                    <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-3 opacity-60">선택된 파일</div>
+                    <div className="space-y-2">
+                      {selectedFiles.map((f, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 bg-white rounded-xl border border-black/[0.03] text-sm">
+                          <span className="font-medium truncate pr-4">📄 {f.name}</span>
+                          <span className="text-[11px] text-text-muted whitespace-nowrap">{(f.size / 1024).toFixed(1)}KB</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {uploadComplete && (
+                  <div className="mt-6 p-5 bg-primary/10 rounded-2xl border border-primary/20 animate-fade-in">
+                    <div className="text-[15px] font-bold text-text-primary mb-1">✨ 업로드 완료!</div>
+                    <p className="text-[13px] text-text-secondary">제출하신 {uploadedUrls.length}개의 서류가 상담 내역에 연결되었습니다.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

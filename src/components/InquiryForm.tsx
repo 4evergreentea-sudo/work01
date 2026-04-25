@@ -20,6 +20,7 @@ export default function InquiryForm() {
   const [rawResponse, setRawResponse] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const [hasThirdPartyCollateral, setHasThirdPartyCollateral] = useState(false);
   const [selectedCollateralType, setSelectedCollateralType] = useState<CollateralType | ''>('');
   const [isMultiHomeOwner, setIsMultiHomeOwner] = useState(false);
@@ -62,8 +63,9 @@ export default function InquiryForm() {
     setIsSaving(false);
     if (response.success) {
       setIsSaved(true);
+      if (response.id) setSavedId(response.id);
     } else {
-      setError(response.error || '저장에 실패했습니다.');
+      setError(response.error || '저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -77,6 +79,7 @@ export default function InquiryForm() {
     setError(null);
     setRawResponse(undefined);
     setIsSaved(false);
+    setSavedId(null);
     setHasThirdPartyCollateral(false);
     setSelectedCollateralType('');
     setIsMultiHomeOwner(false);
@@ -348,6 +351,7 @@ export default function InquiryForm() {
           onSave={handleSave}
           isSaving={isSaving}
           isSaved={isSaved}
+          savedId={savedId}
         />
       )}
     </div>
