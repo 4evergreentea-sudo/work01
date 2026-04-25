@@ -132,69 +132,111 @@ export default function InquiryForm() {
           </div>
         </div>
 
-        {/* 업종 + 대출 유형 + 담보 구분 선택 (3열) */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+        {/* 주요 정보 선택 (업종, 대출유형, 담보구분) */}
+        <div className="space-y-8 mb-10">
           {/* 업종 선택 */}
           <div>
-            <label htmlFor="business-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
-              업종 <span className="text-text-muted font-normal">(AI 자동)</span>
+            <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
+              01. 업종 분류
             </label>
-            <select
-              id="business-type"
-              className="input-field select-field"
-              value={selectedBizType}
-              onChange={(e) => setSelectedBizType(e.target.value as BusinessType | '')}
-              disabled={isLoading}
-            >
-              <option value="">자동 판별</option>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedBizType('')}
+                className={`px-5 py-3 rounded-2xl text-[14px] font-bold transition-all duration-300 border ${
+                  selectedBizType === '' 
+                    ? 'bg-primary text-black border-primary shadow-lg shadow-primary/20 scale-105' 
+                    : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                }`}
+              >
+                🤖 자동 판별
+              </button>
               {BUSINESS_TYPES.map((bt) => (
-                <option key={bt} value={bt}>
+                <button
+                  key={bt}
+                  type="button"
+                  onClick={() => setSelectedBizType(bt)}
+                  className={`px-5 py-3 rounded-2xl text-[14px] font-bold transition-all duration-300 border ${
+                    selectedBizType === bt 
+                      ? 'bg-primary text-black border-primary shadow-lg shadow-primary/20 scale-105' 
+                      : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                  }`}
+                >
                   {BUSINESS_TYPE_ICONS[bt]} {bt}
-                </option>
+                </button>
               ))}
-            </select>
+            </div>
           </div>
 
-          {/* 대출 유형 선택 */}
-          <div>
-            <label htmlFor="loan-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
-              대출 유형 <span className="text-text-muted font-normal">(AI 자동)</span>
-            </label>
-            <select
-              id="loan-type"
-              className="input-field select-field"
-              value={selectedLoanType}
-              onChange={(e) => setSelectedLoanType(e.target.value as LoanType | '')}
-              disabled={isLoading}
-            >
-              <option value="">자동 판별</option>
-              {LOAN_TYPES.map((lt) => (
-                <option key={lt} value={lt}>
-                  {LOAN_TYPE_ICONS[lt]} {lt}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* 대출 유형 및 담보 구분 (2열 레이아웃) */}
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* 대출 유형 */}
+            <div>
+              <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
+                02. 대출 유형
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedLoanType('')}
+                  className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                    selectedLoanType === '' 
+                      ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                      : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                  }`}
+                >
+                  🔄 자동 판별
+                </button>
+                {LOAN_TYPES.map((lt) => (
+                  <button
+                    key={lt}
+                    type="button"
+                    onClick={() => setSelectedLoanType(lt)}
+                    className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                      selectedLoanType === lt 
+                        ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                        : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                    }`}
+                  >
+                    {LOAN_TYPE_ICONS[lt]} {lt}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          {/* 담보 구분 선택 */}
-          <div>
-            <label htmlFor="collateral-type" className="block text-sm font-semibold text-text-secondary mb-2.5">
-              담보 구분 <span className="text-text-muted font-normal">(AI 자동)</span>
-            </label>
-            <select
-              id="collateral-type"
-              className="input-field select-field"
-              value={selectedCollateralType}
-              onChange={(e) => setSelectedCollateralType(e.target.value as CollateralType | '')}
-              disabled={isLoading}
-            >
-              <option value="">자동 판별</option>
-              {COLLATERAL_TYPES.map((ct) => (
-                <option key={ct} value={ct}>
-                  {COLLATERAL_TYPE_ICONS[ct]} {ct}
-                </option>
-              ))}
-            </select>
+            {/* 담보 구분 (사용자가 요청한 항목 강조) */}
+            <div>
+              <label className="block text-[13px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-70">
+                03. 담보 구분
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCollateralType('')}
+                  className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                    selectedCollateralType === '' 
+                      ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                      : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                  }`}
+                >
+                  ⚖️ 자동 판별
+                </button>
+                {COLLATERAL_TYPES.map((ct) => (
+                  <button
+                    key={ct}
+                    type="button"
+                    onClick={() => setSelectedCollateralType(ct)}
+                    className={`px-4 py-4 rounded-2xl text-[13px] font-bold transition-all duration-300 border text-center ${
+                      selectedCollateralType === ct 
+                        ? 'bg-primary text-black border-primary shadow-md shadow-primary/10' 
+                        : 'bg-bg-secondary text-text-secondary border-transparent hover:border-black/10'
+                    }`}
+                  >
+                    {COLLATERAL_TYPE_ICONS[ct]} {ct}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
