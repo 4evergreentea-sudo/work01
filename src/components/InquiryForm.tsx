@@ -56,16 +56,19 @@ export default function InquiryForm() {
     }
   };
 
-  const handleSave = async () => {
-    if (!result) return;
+  const handleSave = async (): Promise<string | null> => {
+    if (!result) return null;
     setIsSaving(true);
     const response = await saveConsultation(customerName.trim(), inquiry.trim(), result);
     setIsSaving(false);
     if (response.success) {
       setIsSaved(true);
-      if (response.id) setSavedId(response.id);
+      const id = response.id || null;
+      if (id) setSavedId(id);
+      return id;
     } else {
       setError(response.error || '저장 중 오류가 발생했습니다.');
+      return null;
     }
   };
 

@@ -5,7 +5,7 @@ import { BUSINESS_TYPE_ICONS, LOAN_TYPE_ICONS } from '../types/inquiry';
 interface ResultCardProps {
   result: ConsultationResult;
   customerName: string;
-  onSave: () => void;
+  onSave: () => Promise<string | null>;
   isSaving: boolean;
   isSaved: boolean;
   savedId: string | null;
@@ -48,11 +48,12 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
     }
   };
 
-  const handleUpload = async () => {
-    if (!savedId || selectedFiles.length === 0) return;
+  const handleUpload = async (id?: string) => {
+    const targetId = id || savedId;
+    if (!targetId || selectedFiles.length === 0) return;
     setIsUploading(true);
     const { success, urls, error } = await import('../lib/supabase').then(m => 
-      m.uploadConsultationFiles(savedId, selectedFiles)
+      m.uploadConsultationFiles(targetId, selectedFiles)
     );
     setIsUploading(false);
     if (success) {
@@ -224,19 +225,13 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
         </div>
 
         {/* Step 2: 서류 업로드 */}
-        <div className={`transition-all duration-500 ${!isSaved ? 'opacity-50 grayscale pointer-events-none' : 'opacity-100'}`}>
+        <div className="transition-all duration-500">
           <div className="text-[11px] font-black text-text-muted uppercase tracking-widest mb-4 opacity-60 flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[10px]">2</span>
             필요 서류 제출 (선택 사항)
           </div>
           
-          <div className={`p-8 rounded-[32px] bg-bg-secondary border-2 border-dashed transition-all duration-300 ${isSaved ? 'border-primary/30 hover:border-primary bg-white' : 'border-black/[0.08]'}`}>
-            {!isSaved && (
-              <div className="mb-4 text-xs font-bold text-text-muted text-center">
-                ⚠️ 서류 업로드를 위해 먼저 분석 결과를 저장해주세요.
-              </div>
-            )}
-            
+          <div className={`p-8 rounded-[32px] bg-bg-secondary border-2 border-dashed transition-all duration-300 ${selectedFiles.length > 0 ? 'border-primary bg-white' : 'border-black/[0.08]'}`}>
             <div className="text-center">
               <div className="text-4xl mb-4">📁</div>
               <h4 className="text-[16px] font-bold text-text-primary mb-2">서류 업로드</h4>
@@ -248,24 +243,31 @@ export default function ResultCard({ result, customerName, onSave, isSaving, isS
                 id="file-upload"
                 className="hidden"
                 onChange={handleFileChange}
-                disabled={!isSaved}
               />
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <label 
                   htmlFor="file-upload" 
-                  className={`btn-secondary py-3 px-8 cursor-pointer transition-all duration-300 ${isSaved ? 'hover:bg-bg-secondary border-black/10' : 'opacity-50 cursor-not-allowed'}`}
+                  className="btn-secondary py-3 px-8 cursor-pointer transition-all duration-300 hover:bg-bg-secondary border-black/10"
                 >
-                  파일 선택하기
+                  {selectedFiles.length > 0 ? '파일 추가하기' : '파일 선택하기'}
                 </label>
                 
-                {selectedFiles.length > 0 && isSaved && (
+                {selectedFiles.length > 0 && (
                   <button
-                    onClick={handleUpload}
-                    disabled={isUploading}
+                    onClick={async () => {
+                      let currentId = savedId;
+                      if (!isSaved) {
+                        currentId = await onSave();
+                      }
+                      if (currentId) {
+                        handleUpload(currentId);
+                      }
+                    }}
+                    disabled={isUploading || isSaving}
                     className="btn-primary py-3 px-10 shadow-xl shadow-primary/30 animate-bounce-subtle"
                   >
-                    {isUploading ? '제출 중...' : `${selectedFiles.length}개 서류 제출 완료하기`}
+                    {isSaving ? '내역 저장 중...' : isUploading ? '제출 중...' : `${selectedFiles.length}개 서류 최종 제출하기`}
                   </button>
                 )}
               </div>
