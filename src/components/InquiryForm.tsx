@@ -20,6 +20,7 @@ export default function InquiryForm() {
   const [rawResponse, setRawResponse] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [hasThirdPartyCollateral, setHasThirdPartyCollateral] = useState(false);
 
   const handleClassify = async () => {
     if (!customerName.trim() || !inquiry.trim()) {
@@ -38,6 +39,7 @@ export default function InquiryForm() {
       entityType,
       selectedBizType || undefined,
       selectedLoanType || undefined,
+      hasThirdPartyCollateral,
     );
     setIsLoading(false);
 
@@ -71,6 +73,7 @@ export default function InquiryForm() {
     setError(null);
     setRawResponse(undefined);
     setIsSaved(false);
+    setHasThirdPartyCollateral(false);
   };
 
   return (
@@ -169,6 +172,32 @@ export default function InquiryForm() {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* 제3자 담보 제공 여부 */}
+        <div className="mb-10 p-5 rounded-2xl bg-bg-secondary border border-black/[0.03] flex items-center justify-between group hover:bg-white hover:border-primary/20 transition-all duration-300">
+          <div>
+            <label className="block text-sm font-bold text-text-primary mb-1">
+              제3자 담보 제공 여부
+            </label>
+            <p className="text-text-muted text-[12px] font-medium">
+              대표자 본인 외의 제3자가 담보를 제공하는 경우 체크하세요
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setHasThirdPartyCollateral(!hasThirdPartyCollateral)}
+            disabled={isLoading}
+            className={`w-14 h-8 rounded-full transition-all duration-500 relative cursor-pointer ${
+              hasThirdPartyCollateral ? 'bg-primary' : 'bg-black/[0.1]'
+            }`}
+          >
+            <div
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-sm transition-all duration-500 ${
+                hasThirdPartyCollateral ? 'left-7' : 'left-1'
+              }`}
+            />
+          </button>
         </div>
 
         {/* 문의 내용 */}

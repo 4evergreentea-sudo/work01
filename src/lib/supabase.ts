@@ -31,6 +31,7 @@ export async function saveConsultation(
       required_docs: result.required_docs,
       ai_response: result.ai_response,
       regulatory_flags: result.regulatory_flags || [],
+      has_third_party_collateral: result.has_third_party_collateral ?? false,
     });
 
     if (error) {

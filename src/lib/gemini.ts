@@ -16,10 +16,12 @@ function buildPrompt(
   entityType?: BusinessEntityType,
   selectedBusinessType?: string,
   selectedLoanType?: string,
+  hasThirdPartyCollateral?: boolean,
 ): string {
   const entityHint = entityType ? `\n사업자 구분 힌트: ${entityType}` : '';
   const bizHint = selectedBusinessType ? `\n업종 힌트: ${selectedBusinessType}` : '';
   const loanHint = selectedLoanType ? `\n대출 유형 힌트: ${selectedLoanType}` : '';
+  const collateralHint = hasThirdPartyCollateral ? `\n제3자 담보 제공 여부: 예 (제3자가 담보를 제공함)` : '\n제3자 담보 제공 여부: 아니오';
 
   return `당신은 KB금융그룹의 기업여신(기업대출) 전문 심사역입니다.
 아래 고객 문의를 분석하여 정확하게 분류하고, 필요한 서류를 빠짐없이 안내하세요.
@@ -109,6 +111,9 @@ function buildPrompt(
   부동산 담보: 등기사항전부증명서(부동산), 감정평가서, 토지이용계획확인원, 임대차계약서(필요 시)
   보증서 담보: 보증서 사본, 보증약정서
   기타 담보: 담보물 관련 증빙
+112: 
+113: ■ [특수 상황 추가 서류]:
+114:   제3자 담보 제공 시: 제3자 담보 제공 승낙서(또는 동의서), 담보 제공자 신분증 사본, (법인일 경우) 이사회의사록 추가
 
 ═══════════════════════════════════
 [우선순위 판단 기준]
@@ -120,7 +125,7 @@ function buildPrompt(
 ═══════════════════════════════════
 [고객 정보]
 ═══════════════════════════════════
-고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}
+고객명/기업명: ${customerName}${entityHint}${bizHint}${loanHint}${collateralHint}
 문의 내용: ${inquiry}
 
 ═══════════════════════════════════
@@ -148,6 +153,7 @@ export async function classifyConsultation(
   entityType?: BusinessEntityType,
   selectedBusinessType?: string,
   selectedLoanType?: string,
+  hasThirdPartyCollateral?: boolean,
 ): Promise<{ result?: ConsultationResult; error?: string; rawResponse?: string }> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
@@ -158,7 +164,7 @@ export async function classifyConsultation(
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const prompt = buildPrompt(customerName, inquiry, entityType, selectedBusinessType, selectedLoanType);
+    const prompt = buildPrompt(customerName, inquiry, entityType, selectedBusinessType, selectedLoanType, hasThirdPartyCollateral);
 
     const response = await ai.models.generateContent({
       model: MODEL_NAME,

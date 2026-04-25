@@ -36,6 +36,7 @@ export interface ConsultationResult {
   required_docs: string[];
   ai_response: string;
   regulatory_flags: string[];
+  has_third_party_collateral?: boolean;
 }
 
 /** Supabase consultation_logs 레코드 타입 */

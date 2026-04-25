@@ -22,6 +22,7 @@ CREATE TABLE consultation_logs (
   required_docs        JSONB DEFAULT '[]'::jsonb,        -- 안내된 서류 리스트 (배열)
   ai_response          TEXT,                             -- AI 안내 메시지 전문
   regulatory_flags     JSONB DEFAULT '[]'::jsonb,        -- 규제 검토 항목 (RTI, DSR 등)
+  has_third_party_collateral BOOLEAN DEFAULT false,      -- 제3자 담보 제공 여부
   created_at           TIMESTAMPTZ DEFAULT now()
 );
 
