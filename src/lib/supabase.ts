@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { InquiryResult, InquiryRecord } from '../types/inquiry';
+import type { ConsultationResult, ConsultationRecord } from '../types/inquiry';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -11,21 +11,26 @@ if (!supabaseUrl || !supabaseKey) {
 /** Supabase 클라이언트 인스턴스 */
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 
-/** 문의 분류 결과를 Supabase에 저장 */
-export async function saveInquiry(
+/** 상담 결과를 Supabase에 저장 */
+export async function saveConsultation(
   customerName: string,
-  inquiry: string,
-  result: InquiryResult
+  inquiryText: string,
+  result: ConsultationResult,
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase.from('inquiries').insert({
+    const { error } = await supabase.from('consultation_logs').insert({
       customer_name: customerName,
-      inquiry,
-      category: result.category,
-      urgency: result.urgency,
+      business_entity_type: result.business_entity_type,
+      business_type: result.business_type,
+      loan_type: result.loan_type,
+      loan_purpose: result.loan_purpose || '',
+      collateral_type: result.collateral_type || '',
+      inquiry_text: inquiryText,
+      priority: result.priority,
       summary: result.summary,
-      department: result.department,
-      script: result.script,
+      required_docs: result.required_docs,
+      ai_response: result.ai_response,
+      regulatory_flags: result.regulatory_flags || [],
     });
 
     if (error) {
@@ -40,21 +45,34 @@ export async function saveInquiry(
   }
 }
 
-/** Supabase에서 전체 문의 내역 조회 */
-export async function fetchInquiries(): Promise<{
-  data: InquiryRecord[];
-  error?: string;
-}> {
+/** 상담 내역 조회 (필터 지원) */
+export async function fetchConsultations(filters?: {
+  entityType?: string;
+  businessType?: string;
+  loanType?: string;
+}): Promise<{ data: ConsultationRecord[]; error?: string }> {
   try {
-    const { data, error } = await supabase
-      .from('inquiries')
+    let query = supabase
+      .from('consultation_logs')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      return { data: [], error: `문의 내역 조회 실패: ${error.message}` };
+    if (filters?.entityType) {
+      query = query.eq('business_entity_type', filters.entityType);
     }
-    return { data: (data as InquiryRecord[]) || [] };
+    if (filters?.businessType) {
+      query = query.eq('business_type', filters.businessType);
+    }
+    if (filters?.loanType) {
+      query = query.eq('loan_type', filters.loanType);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      return { data: [], error: `상담 내역 조회 실패: ${error.message}` };
+    }
+    return { data: (data as ConsultationRecord[]) || [] };
   } catch (err) {
     const message = err instanceof Error ? err.message : '알 수 없는 오류';
     return { data: [], error: `Supabase 연결 실패: ${message}` };

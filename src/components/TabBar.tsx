@@ -1,17 +1,18 @@
 interface TabBarProps {
-  activeTab: 'input' | 'list';
-  onTabChange: (tab: 'input' | 'list') => void;
+  activeTab: 'input' | 'list' | 'dashboard';
+  onTabChange: (tab: 'input' | 'list' | 'dashboard') => void;
 }
 
-/** 프리미엄 탭 전환 UI */
+/** 3탭 전환 UI — 프리미엄 */
 export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
   const tabs = [
-    { id: 'input' as const, label: '문의 입력', icon: '✏️' },
-    { id: 'list' as const, label: '문의 내역', icon: '📊' },
+    { id: 'input' as const, label: '상담 입력', icon: '✏️' },
+    { id: 'list' as const, label: '상담 내역', icon: '📊' },
+    { id: 'dashboard' as const, label: '대시보드', icon: '📈' },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 mb-10">
+    <div className="max-w-5xl mx-auto px-4 mb-10">
       <div
         className="flex rounded-2xl p-1.5 gap-1"
         style={{
@@ -27,7 +28,7 @@ export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
               key={tab.id}
               id={`tab-${tab.id}`}
               onClick={() => onTabChange(tab.id)}
-              className="flex-1 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all duration-400 cursor-pointer flex items-center justify-center gap-2"
+              className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-400 cursor-pointer flex items-center justify-center gap-2"
               style={{
                 background: isActive
                   ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15))'

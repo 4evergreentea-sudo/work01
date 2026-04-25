@@ -23,9 +23,7 @@ export default function LoadingSpinner() {
           }}
         />
         {/* 중심 도트 */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-        >
+        <div className="absolute inset-0 flex items-center justify-center">
           <div
             className="w-3 h-3 rounded-full"
             style={{
@@ -39,7 +37,10 @@ export default function LoadingSpinner() {
 
       {/* 텍스트 */}
       <p className="mt-8 text-text-secondary text-sm font-medium">
-        AI가 문의를 분석하고 있습니다
+        AI가 기업여신 상담을 분석하고 있습니다
+      </p>
+      <p className="mt-2 text-text-muted text-xs">
+        업종 · 사업자 유형 · 담보에 맞는 서류를 준비 중...
       </p>
       <div className="flex gap-1.5 mt-4">
         {[0, 1, 2].map((i) => (

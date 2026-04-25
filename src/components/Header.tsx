@@ -1,8 +1,8 @@
-/** KB금융 브랜딩 헤더 — 프리미엄 디자인 */
+/** 기업여신 상담 AI 브랜딩 헤더 — 프리미엄 디자인 */
 export default function Header() {
   return (
     <header className="w-full pt-8 pb-6 px-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* 메인 헤더 */}
         <div className="flex items-center gap-5">
           {/* KB 로고 */}
@@ -31,10 +31,10 @@ export default function Header() {
           {/* 타이틀 영역 */}
           <div>
             <h1 className="text-2xl font-bold text-text-primary leading-tight tracking-tight">
-              고객 문의 자동 분류
+              기업여신 상담 AI
             </h1>
-            <div className="flex items-center gap-3 mt-1.5">
-              <span className="text-xs text-text-muted">KB금융그룹</span>
+            <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+              <span className="text-xs text-text-muted">기업대출 서류 안내 & 상담 자동화</span>
               <span className="text-text-muted">·</span>
               <span
                 className="text-xs font-medium px-2.5 py-0.5 rounded-full"
@@ -44,7 +44,7 @@ export default function Header() {
                   border: '1px solid rgba(59, 130, 246, 0.15)',
                 }}
               >
-                Gemini 3 Flash
+                Gemini 3 Flash · 기업여신 전문
               </span>
             </div>
           </div>
